@@ -1,0 +1,12 @@
+### merge_lora.yaml
+### model
+model_name_or_path: ./huggingface_models/Qwen3-14B
+adapter_name_or_path: ./saves/Qwen3-14B/main_exp/gsm8k_10_0.03_0.01/checkpoint-25
+template: qwen3
+finetuning_type: lora
+
+### export
+export_dir: merge_models/Qwen3-14B-gsm8k-25
+export_size: 8
+export_device: cpu
+export_legacy_format: false

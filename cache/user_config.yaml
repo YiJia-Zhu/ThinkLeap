@@ -1,0 +1,6 @@
+cache_dir: null
+lang: en
+last_model: Qwen3-14B-Instruct
+path_dict:
+  QwQ-32B-Instruct: ./huggingface_models/QwQ-32B
+  Qwen3-14B-Instruct: ./huggingface_models/Qwen3-14B

@@ -1,0 +1,6 @@
+method,model,dataset,epoch,accuracy,avg_token_consumption
+org,DeepSeek-R1-Distill-Qwen-1.5B,gsm8k,-1,79.47,579.33
+ours,DeepSeek-R1-Distill-Qwen-1.5B,gsm8k_10_0.1_0.01,1,77.57,615.38
+ours,DeepSeek-R1-Distill-Qwen-1.5B,gsm8k_10_0.1_0.01,3,79.09,601.13
+ours,DeepSeek-R1-Distill-Qwen-1.5B,gsm8k_10_0.1_0.01,5,83.27,458.78
+ours,DeepSeek-R1-Distill-Qwen-1.5B,gsm8k_10_0.1_0.01,10,84.03,407.70
