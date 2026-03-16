@@ -50,63 +50,63 @@ echo "MODEL_NAME:          $MODEL_NAME"
 echo "CUDA_VISIBLE_DEVICES:$CUDA_VISIBLE_DEVICES"
 echo "------------------------------------"
 
-# echo ""
-# echo ">>> Step 1: Genrating confidence...20min"
-# python step1_inference_and_calculate_confidence.py --model_path "${BASE_PATH}/huggingface_models/${MODEL_NAME}" --dataset_name ${DATASET} --window_size ${WINDOW_SIZE} --peak_prominence ${PEAK_PROMINENCE} --rise_magnitude ${RISE_MAGNITUDE}  --cuda_visible_devices ${CUDA_VISIBLE_DEVICES}
+echo ""
+echo ">>> Step 1: Genrating confidence...20min"
+python step1_inference_and_calculate_confidence.py --model_path "${BASE_PATH}/huggingface_models/${MODEL_NAME}" --dataset_name ${DATASET} --window_size ${WINDOW_SIZE} --peak_prominence ${PEAK_PROMINENCE} --rise_magnitude ${RISE_MAGNITUDE}  --cuda_visible_devices ${CUDA_VISIBLE_DEVICES}
 
-# echo ""
-# echo ">>> Step 2: Running initial data processing...20min"
-# python step2_replace_and_prune.py --model_path "${BASE_PATH}/huggingface_models/${MODEL_NAME}" --dataset_name ${DATASET} --window_size ${WINDOW_SIZE} --peak_prominence ${PEAK_PROMINENCE} --rise_magnitude ${RISE_MAGNITUDE}  --cuda_visible_devices ${CUDA_VISIBLE_DEVICES} --output_jsonl_file "${BASE_PATH}/step2_compressed_data/main_exp/${MODEL_NAME}/${FILENAME_BASE}.jsonl" 
-
-
-# echo ""
-# echo ">>> Step 3: Converting data for LLM factory..."
-# python step3_data2LLMfactory.py --input_file "${BASE_PATH}/step2_compressed_data/main_exp/${MODEL_NAME}/${FILENAME_BASE}.jsonl" --output_file "${BASE_PATH}/step3_training_data/main_exp/${MODEL_NAME}/${FILENAME_BASE}.json" --test_split_ratio 0.0
+echo ""
+echo ">>> Step 2: Running initial data processing...20min"
+python step2_replace_and_prune.py --model_path "${BASE_PATH}/huggingface_models/${MODEL_NAME}" --dataset_name ${DATASET} --window_size ${WINDOW_SIZE} --peak_prominence ${PEAK_PROMINENCE} --rise_magnitude ${RISE_MAGNITUDE}  --cuda_visible_devices ${CUDA_VISIBLE_DEVICES} --output_jsonl_file "${BASE_PATH}/step2_compressed_data/main_exp/${MODEL_NAME}/${FILENAME_BASE}.jsonl" 
 
 
-# echo ""
-# echo ">>> Step 4: Training using LLM factory...15min"
-# llamafactory-cli train \
-#     --stage sft \
-#     --do_train True \
-#     --model_name_or_path ${BASE_PATH}/huggingface_models/${MODEL_NAME} \
-#     --preprocessing_num_workers 16 \
-#     --finetuning_type lora \
-#     --template ${MODEL_TEMPLATE} \
-#     --flash_attn auto \
-#     --dataset_dir ./step3_training_data/main_exp/${MODEL_NAME} \
-#     --dataset ${FILENAME_BASE} \
-#     --cutoff_len 14336 \
-#     --learning_rate 5e-05 \
-#     --num_train_epochs ${EPOCH_NUM} \
-#     --max_samples 100000 \
-#     --per_device_train_batch_size 2 \
-#     --gradient_accumulation_steps 8 \
-#     --lr_scheduler_type cosine \
-#     --max_grad_norm 1.0 \
-#     --logging_steps 5 \
-#     --save_strategy epoch \
-#     --warmup_steps 10 \
-#     --packing False \
-#     --enable_thinking True \
-#     --report_to none \
-#     --output_dir saves/${MODEL_NAME}/main_exp/${FILENAME_BASE} \
-#     --bf16 True \
-#     --plot_loss True \
-#     --trust_remote_code True \
-#     --ddp_timeout 180000000 \
-#     --include_num_input_tokens_seen True \
-#     --optim adamw_torch \
-#     --lora_rank 8 \
-#     --lora_alpha 16 \
-#     --lora_dropout 0 \
-#     --lora_target all \
-#     --val_size 0.1 \
-#     --eval_strategy steps \
-#     --eval_steps 100 \
-#     --per_device_eval_batch_size 2 \
-#     --overwrite_output_dir True \
-#     --seed 1 ${DEEPSPEED_3}
+echo ""
+echo ">>> Step 3: Converting data for LLM factory..."
+python step3_data2LLMfactory.py --input_file "${BASE_PATH}/step2_compressed_data/main_exp/${MODEL_NAME}/${FILENAME_BASE}.jsonl" --output_file "${BASE_PATH}/step3_training_data/main_exp/${MODEL_NAME}/${FILENAME_BASE}.json" --test_split_ratio 0.0
+
+
+echo ""
+echo ">>> Step 4: Training using LLM factory...15min"
+llamafactory-cli train \
+    --stage sft \
+    --do_train True \
+    --model_name_or_path ${BASE_PATH}/huggingface_models/${MODEL_NAME} \
+    --preprocessing_num_workers 16 \
+    --finetuning_type lora \
+    --template ${MODEL_TEMPLATE} \
+    --flash_attn auto \
+    --dataset_dir ./step3_training_data/main_exp/${MODEL_NAME} \
+    --dataset ${FILENAME_BASE} \
+    --cutoff_len 14336 \
+    --learning_rate 5e-05 \
+    --num_train_epochs ${EPOCH_NUM} \
+    --max_samples 100000 \
+    --per_device_train_batch_size 2 \
+    --gradient_accumulation_steps 8 \
+    --lr_scheduler_type cosine \
+    --max_grad_norm 1.0 \
+    --logging_steps 5 \
+    --save_strategy epoch \
+    --warmup_steps 10 \
+    --packing False \
+    --enable_thinking True \
+    --report_to none \
+    --output_dir saves/${MODEL_NAME}/main_exp/${FILENAME_BASE} \
+    --bf16 True \
+    --plot_loss True \
+    --trust_remote_code True \
+    --ddp_timeout 180000000 \
+    --include_num_input_tokens_seen True \
+    --optim adamw_torch \
+    --lora_rank 8 \
+    --lora_alpha 16 \
+    --lora_dropout 0 \
+    --lora_target all \
+    --val_size 0.1 \
+    --eval_strategy steps \
+    --eval_steps 100 \
+    --per_device_eval_batch_size 2 \
+    --overwrite_output_dir True \
+    --seed 1 ${DEEPSPEED_3}
 
 # --- Step 4.2: 查找、排序并索引所有可用的 Checkpoint ---
 
